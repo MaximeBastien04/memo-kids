@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
         Sounds.clip = win;
         Sounds.Play();
     }
-      public void Wrongound()
+      public void Wrongsound()
     {
         Sounds.clip = wrong;
         Sounds.Play();
