@@ -10,9 +10,13 @@ public class LogicManager : MonoBehaviour
     public class ImageSet
     {
         public Sprite fullImage;
-        public Sprite missingImage;
-        public Sprite correctItem;
-        public Sprite[] wrongItems;
+        public Sprite missingImage1;
+        public Sprite correctItem1;
+        public Sprite[] wrongItems1;
+
+        public Sprite missingImage2;
+        public Sprite correctItem2;
+        public Sprite[] wrongItems2;
     }
 
     public Image pictureDisplay;
@@ -63,25 +67,55 @@ public class LogicManager : MonoBehaviour
         foreach (Button btn in optionButtons) btn.gameObject.SetActive(true);
 
         // Show the missing item image
-        pictureDisplay.sprite = currentSet.missingImage;
+        bool useFirstMissingImage = Random.value > 0.5f;
+        pictureDisplay.sprite = useFirstMissingImage ? currentSet.missingImage1 : currentSet.missingImage2;
 
-        LoadOptions();
+        LoadOptions(useFirstMissingImage);
     }
 
-    void LoadOptions()
+    void LoadOptions(bool useFirstSet)
     {
-        correctAnswer = currentSet.correctItem;
+        if (useFirstSet)
+        {
+            correctAnswer = currentSet.correctItem1;
+            AssignOptions(currentSet.correctItem1, currentSet.wrongItems1);
+        }
+        else
+        {
+            correctAnswer = currentSet.correctItem2;
+            AssignOptions(currentSet.correctItem2, currentSet.wrongItems2);
+        }
 
-        // Create randomized answer choices
-        List<Sprite> choices = new List<Sprite>(currentSet.wrongItems);
-        choices.Add(correctAnswer);
+        // correctAnswer = currentSet.correctItem;
+
+        // // Create randomized answer choices
+        // List<Sprite> choices = new List<Sprite>(currentSet.wrongItems);
+        // choices.Add(correctAnswer);
+        // choices = ShuffleList(choices);
+
+        // // Assign images to the child Image component inside each button
+        // for (int i = 0; i < optionButtons.Length; i++)
+        // {
+        //     Image buttonImage = optionButtons[i].transform.Find("Image").GetComponent<Image>();
+        //     buttonImage.preserveAspect = true;
+        //     buttonImage.sprite = choices[i]; // Assign sprite to child Image component
+
+        //     Sprite selectedAnswer = choices[i]; // Store the answer choice
+        //     optionButtons[i].onClick.RemoveAllListeners();
+        //     optionButtons[i].onClick.AddListener(() => CheckAnswer(selectedAnswer));
+        // }
+    }
+
+    void AssignOptions(Sprite correct, Sprite[] wrongItems)
+    {
+        List<Sprite> choices = new List<Sprite>(wrongItems);
+        choices.Add(correct);
         choices = ShuffleList(choices);
 
         // Assign images to the child Image component inside each button
         for (int i = 0; i < optionButtons.Length; i++)
         {
             Image buttonImage = optionButtons[i].transform.Find("Image").GetComponent<Image>();
-            buttonImage.preserveAspect = true;
             buttonImage.sprite = choices[i]; // Assign sprite to child Image component
 
             Sprite selectedAnswer = choices[i]; // Store the answer choice
