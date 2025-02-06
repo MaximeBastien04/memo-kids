@@ -21,8 +21,8 @@ public class LogicManager : MonoBehaviour
 
     public Image pictureDisplay;
     public Button[] optionButtons;
-    public Button playButton; // Play button to start the round
-    public Button nextLevelButton; // Next level button to proceed
+    public Button playButton;
+    public Button nextLevelButton;
 
     public List<ImageSet> imageSets;
     private ImageSet currentSet;
@@ -37,8 +37,7 @@ public class LogicManager : MonoBehaviour
 
     void SetupLevel()
     {
-        Debug.Log("Level: " + levelCount + ", imageset count: " + imageSets.Count.ToString());
-        if (levelCount <= imageSets.Count)
+        if (levelCount < imageSets.Count)
         {
             currentSet = imageSets[levelCount];
         }
@@ -85,25 +84,6 @@ public class LogicManager : MonoBehaviour
             correctAnswer = currentSet.correctItem2;
             AssignOptions(currentSet.correctItem2, currentSet.wrongItems2);
         }
-
-        // correctAnswer = currentSet.correctItem;
-
-        // // Create randomized answer choices
-        // List<Sprite> choices = new List<Sprite>(currentSet.wrongItems);
-        // choices.Add(correctAnswer);
-        // choices = ShuffleList(choices);
-
-        // // Assign images to the child Image component inside each button
-        // for (int i = 0; i < optionButtons.Length; i++)
-        // {
-        //     Image buttonImage = optionButtons[i].transform.Find("Image").GetComponent<Image>();
-        //     buttonImage.preserveAspect = true;
-        //     buttonImage.sprite = choices[i]; // Assign sprite to child Image component
-
-        //     Sprite selectedAnswer = choices[i]; // Store the answer choice
-        //     optionButtons[i].onClick.RemoveAllListeners();
-        //     optionButtons[i].onClick.AddListener(() => CheckAnswer(selectedAnswer));
-        // }
     }
 
     void AssignOptions(Sprite correct, Sprite[] wrongItems)
@@ -131,14 +111,19 @@ public class LogicManager : MonoBehaviour
             Debug.Log("Correct!");
             audioManager.WinSound();
             levelCount++;
+            pictureDisplay.sprite = currentSet.fullImage;
 
             // Show Next Level button
             nextLevelButton.gameObject.SetActive(true);
             nextLevelButton.onClick.RemoveAllListeners();
             nextLevelButton.onClick.AddListener(SetupLevel);
+
+            // Hide Option buttons
+            foreach (Button btn in optionButtons) btn.gameObject.SetActive(false);
         }
         else
         {
+            // play shake animation
             audioManager.Wrongsound();
             Debug.Log("Wrong!");
         }
