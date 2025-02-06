@@ -12,18 +12,11 @@ public class ButtonManager : MonoBehaviour
     private bool isMuted = false;   
     void Start()
     {
-        
-        if(SceneManager.GetActiveScene().name != "MenuScene" && SceneManager.GetActiveScene().name != "EndGameScene") {
+        if(SceneManager.GetActiveScene().name != "StartScene" && SceneManager.GetActiveScene().name != "EndScene") {
             isMuted = PlayerPrefs.GetInt("Muted", 0) == 1;
             AudioListener.volume = isMuted ? 0f : 1f;
             UpdateMuteButton();
-        } 
-   
-    }
-
-    void Update()
-    {
-       
+        }
     }
 
     public void PlayGame()
@@ -39,26 +32,12 @@ public class ButtonManager : MonoBehaviour
 
     public void LoadStartScene()
     {
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("StartScene");
     }
 
-    public void LoadLevel2()
-    {
-        SceneManager.LoadScene("Level2");
-    }
-
-    public void LoadLevel3()
-    {
-        SceneManager.LoadScene("Level3");
-    }
-
-    public void LoadLevel4()
-    {
-        SceneManager.LoadScene("Level4");
-    }
     public void LoadGameEnd()
     {
-        SceneManager.LoadScene("EndGameScene");
+        SceneManager.LoadScene("EndScene");
     }
 
     public void MuteSound()
@@ -70,24 +49,20 @@ public class ButtonManager : MonoBehaviour
     {
         AudioListener.volume = 1f;
     }
-
   
      public void ToggleMute()
     {
         isMuted = !isMuted;
         AudioListener.volume = isMuted ? 0f : 1f;
 
-    // Save  sound state
         PlayerPrefs.SetInt("Muted", isMuted ? 1 : 0);
         PlayerPrefs.Save();
 
-        // Update the button appearance
         UpdateMuteButton();
     }
 
     void UpdateMuteButton()
     {
-        // Change button sprite based on mute state
         muteButtonImage.sprite = isMuted ? mutedSprite : unmutedSprite;
     }
 }
