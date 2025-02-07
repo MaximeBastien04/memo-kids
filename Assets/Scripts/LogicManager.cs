@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using TMPro;
 
 public class LogicManager : MonoBehaviour
 {
@@ -29,6 +31,7 @@ public class LogicManager : MonoBehaviour
     private Sprite correctAnswer;
     private int levelCount = 0;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private GameObject readyText;
 
     void Start()
     {
@@ -55,6 +58,7 @@ public class LogicManager : MonoBehaviour
 
         // Show play button
         playButton.gameObject.SetActive(true);
+        readyText.SetActive(true);
         playButton.onClick.RemoveAllListeners();
         playButton.onClick.AddListener(StartGame);
     }
@@ -63,6 +67,7 @@ public class LogicManager : MonoBehaviour
     {
         // Hide play button, show answer choices
         playButton.gameObject.SetActive(false);
+        readyText.SetActive(false);
         foreach (Button btn in optionButtons) btn.gameObject.SetActive(true);
 
         // Show the missing item image
@@ -106,9 +111,20 @@ public class LogicManager : MonoBehaviour
 
     void CheckAnswer(Sprite chosenAnswer)
     {
+        Button clickedButton = null;
+        // Find the clicked button by comparing its image
+        foreach (Button btn in optionButtons)
+        {
+            Image buttonImage = btn.transform.Find("Image").GetComponent<Image>();
+            if (buttonImage.sprite == chosenAnswer)
+            {
+                clickedButton = btn;
+                break;
+            }
+        }
+
         if (chosenAnswer == correctAnswer)
         {
-            Debug.Log("Correct!");
             audioManager.WinSound();
             levelCount++;
             pictureDisplay.sprite = currentSet.fullImage;
@@ -123,9 +139,11 @@ public class LogicManager : MonoBehaviour
         }
         else
         {
-            // play shake animation
             audioManager.Wrongsound();
-            Debug.Log("Wrong!");
+
+            // Play shake animation on the clicked button
+            Animator animator = clickedButton.transform.Find("Image").GetComponent<Animator>();
+            animator.SetTrigger("shake");
         }
     }
 
