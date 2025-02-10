@@ -7,7 +7,7 @@ public class ButtonManager : MonoBehaviour
     public Button muteButton;       
     public Image muteButtonImage;       
     public Sprite unmutedSprite;    
-    public Sprite mutedSprite;      
+    public Sprite mutedSprite;
 
     private bool isMuted = false;   
     void Start()
